@@ -13,11 +13,6 @@
 #   description = "Live site URL (https)"
 # }
 
-# output "build_hook_url" {
-#   value       = netlify_build_hook.manual_trigger.url
-#   description = "URL to trigger a build manually"
-# }
-
 # output "deploy_key_public" {
 #   value       = netlify_deploy_key.this.public_key
 #   description = "Add this as a read-only Deploy Key in your Git repo settings"
