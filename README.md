@@ -78,7 +78,7 @@ This creates a Netlify site but does not deploy files.
 
 ## 📦 Outputs
 
-After a successful run, Terraform provides:
+After a successful run, Terraform provides on the HCP console:
 
 - **live_site_url** → URL of the deployed Netlify site
 - **netlify_site_id** → ID of the Netlify site
