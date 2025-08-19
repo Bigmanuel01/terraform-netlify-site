@@ -1,13 +1,16 @@
-variable "site_name" {
-  description = "Optional custom Netlify subdomain. Random if null."
+# environment variable or a workspace variable in HCP Terraform.
+variable "netlify_token" {
   type        = string
-  default     = null
+  description = "Your Netlify Personal Access Token"
+  sensitive   = true
 }
 
-variable "repo_path" {
-  description = "Git repo path in your VCS, e.g. 'username/repo'."
+# A variable for a custom site name prefix.
+# This makes it easy to customize the site's Netlify subdomain.
+variable "site_name_prefix" {
   type        = string
-  default     = "Bigmanuel01/terraform-netlify-site"
+  description = "A unique prefix for your Netlify site name."
+  default     = "terraform-challenge"
 }
 
 
