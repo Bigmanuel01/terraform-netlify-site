@@ -1,12 +1,8 @@
-Got it 👍. Here’s the full **README** with a **Quickstart Example** included, so someone can fork and deploy without running Terraform locally:
-
 ---
-
 # 🚀 Terraform + Netlify Site Deployment
 
 This project provisions and deploys a **Netlify site** using **Terraform** and automates deployment with **GitHub Actions**.
 It demonstrates Infrastructure as Code (IaC) principles while ensuring the setup is **re-runnable** with fresh credentials.
-
 ---
 
 ## 📋 Requirements
