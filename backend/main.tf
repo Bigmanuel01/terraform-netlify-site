@@ -1,11 +1,11 @@
-terraform {
-  cloud {
+# terraform {
+#   cloud {
 
-    organization = "terraform-netlify-site"
+#     organization = "terraform-netlify-site"
 
-    workspaces {
-      name = "netlify-site"
-    }
-  }
-}
+#     workspaces {
+#       name = "netlify-site"
+#     }
+#   }
+# }
 

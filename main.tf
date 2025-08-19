@@ -1,52 +1,76 @@
 terraform {
-  required_version = ">= 1.4.0"
-
   required_providers {
     netlify = {
-      source  = "netlify/netlify"
-      version = ">= 0.2.3"
+      source  = "AegirHealth/netlify"
+      version = "0.6.12"
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.5.0"
+      version = "3.1.0"
+    }
+  }
+
+  cloud {
+    # Replace with your HCP Terraform organization name
+    organization = "terraform-netlify-site"
+
+    workspaces {
+      # Replace with your HCP Terraform workspace name
+      name = "netlify-site"
     }
   }
 }
 
+# This provider block configures the Netlify connection.
+# The `access_token` is retrieved from an environment variable.
+# We will use this provider to create and manage the site.
 provider "netlify" {
-  # Provided via Terraform var or env NETLIFY_TOKEN. Do not hardcode.
   token = var.netlify_token
 }
 
-# Random suffix for unique site names
-resource "random_pet" "suffix" {
-  length = 2
+# environment variable or a workspace variable in HCP Terraform.
+variable "netlify_token" {
+  type        = string
+  description = "Your Netlify Personal Access Token"
+  sensitive   = true
 }
 
-locals {
-  site_name = coalesce(var.site_name, "tf-netlify-${random_pet.suffix.id}")
+# A variable for a custom site name prefix.
+# This makes it easy to customize the site's Netlify subdomain.
+variable "site_name_prefix" {
+  type        = string
+  description = "A unique prefix for your Netlify site name."
+  default     = "terraform-challenge"
 }
 
-# Netlify deploy key that will be added as a read-only deploy key in your VCS
-resource "netlify_deploy_key" "this" {}
-
-# Create the Netlify site and connect it to your Git repo
-resource "netlify_site" "this" {
-  name = local.site_name
-
-  repo {
-    deploy_key_id = netlify_deploy_key.this.id
-    provider      = "github"        # or "gitlab" or "bitbucket"
-    repo_path     = var.repo_path   # e.g. "your-username/terraform-netlify-site"
-    repo_branch   = var.repo_branch # e.g. "main"
-    command       = var.build_command
-    dir           = var.publish_dir
-  }
+# The random provider is used here to generate a unique string.
+# This ensures that the Netlify subdomain is unique on every run,
+# preventing naming conflicts.
+resource "random_string" "unique_suffix" {
+  length  = 6
+  special = false
+  upper   = false
 }
 
-# Optional build hook to trigger deploys manually
-resource "netlify_build_hook" "manual_trigger" {
-  site_id = netlify_site.this.id
-  branch  = var.repo_branch
-  title   = "manual-deploy"
+resource "netlify_site" "my_unique_site" {
+  name = "${var.site_name_prefix}-${random_string.unique_suffix.result}"
 }
+
+# This output block provides the URL of the live site after deployment.
+# It's a key deliverable and makes it easy to find the deployed site.
+
+output "live_site_url" {
+  description = "The URL of the live Netlify site."
+  value       = "https://${netlify_site.my_unique_site.name}.netlify.app"
+}
+
+output "netlify_site_id" {
+  value       = netlify_site.my_unique_site.id
+  description = "The Netlify site ID, used for deployments."
+}
+
+output "netlify_site_name" {
+  value       = netlify_site.my_unique_site.name
+  description = "The Netlify site subdomain name."
+}
+
